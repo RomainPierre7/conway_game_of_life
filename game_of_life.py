@@ -1,6 +1,8 @@
-from random import sample, random
+from random import sample
 from tkinter import Tk, Canvas, Scale, Button, Label, N, ALL
 import copy
+
+view_grid_border = True
 
 def grid_init(p):
     map=[(row,col) for col in range(n_col) for row in range(n_row)]
@@ -25,7 +27,10 @@ def fill_cell(states, row, col):
         B=(unit*(col+1), unit*(row+1))
         state=states[row][col]
         color=COLORS[state]
-        cnv.create_rectangle(A, B, fill=color, outline='')
+        if view_grid_border:
+            cnv.create_rectangle(A, B, fill=color, outline='gray', width=1)
+        else:
+            cnv.create_rectangle(A, B, fill=color, outline='')
 
 def fill(states):
     for row in range(n_row):
@@ -99,6 +104,11 @@ def random_start(percent):
     new_density(states,p)
     fill(states)
 
+def view_grid():
+    global view_grid_border
+    view_grid_border = False if view_grid_border else True
+    fill(states)
+
 # ------------------ Settings ------------------
 
 root = Tk()
@@ -127,15 +137,19 @@ button2=Button(root,text="Start",  font='Arial 15 bold',\
                command=start, width=8)
 button2.grid(row=1, column=1, sticky=N)
 
+button3=Button(root,text="View grid",  font='Arial 15 bold',\
+               command=view_grid, width=8)
+button3.grid(row=2, column=1, sticky=N)
+
 curseur = Scale(root, orient = "vertical", command=random_start, from_=100,
       to=0, length=200, tickinterval= 25,  label='Density')
 curseur.set(10)
-curseur.grid(row=2, column=1, sticky=N, pady=100)
+curseur.grid(row=3, column=1, sticky=N, pady=100)
 
-label1=Label(root,text="You can put density to 0 and",  font='Arial 6 bold', width=30)
-label1.grid(row=3, column=1, sticky=N)
+label1=Label(root,text="Set density to 0 and",  font='Arial 6 bold', width=30)
+label1.grid(row=4, column=1, sticky=N)
 label2=Label(root,text="click to add your own config",  font='Arial 6 bold', width=30)
-label2.grid(row=4, column=1, sticky=N)
+label2.grid(row=5, column=1, sticky=N)
 
 cnv.bind("<Button-1>", start_cell)
 
